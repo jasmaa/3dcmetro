@@ -1,18 +1,18 @@
 import * as THREE from 'three';
 import stationsData from "./data/stations.json";
-import pathsData from "./data/paths.json";
+import linesData from "./data/lines.json";
 
 const centerLat = 38.8976762795752;
 const centerLon = -77.0365512601176;
-const scaleFactor = 50;
+const scaleFactor = 100;
 
-const lineCode2Color = {
-  "BL": "blue",
-  "GR": "green",
-  "OR": "orange",
-  "SV": "silver",
-  "RD": "red",
-  "YL": "yellow",
+const lineName2Color = {
+  "blue": "blue",
+  "green": "green",
+  "orange": "orange",
+  "silver": "silver",
+  "red": "red",
+  "yellow": "yellow",
 };
 
 (() => {
@@ -21,15 +21,9 @@ const lineCode2Color = {
   const scene = new THREE.Scene();
 
   // Render stations
-  const stationPts = new Map();
-  for (const station of stationsData.Stations) {
-    const scaledX = scaleFactor * (station.Lon - centerLon);
-    const scaledY = -scaleFactor * (station.Lat - centerLat);
-
-    stationPts.set(station.Code, {
-      x: scaledX,
-      y: scaledY,
-    });
+  for (const station of stationsData.features) {
+    const scaledX = scaleFactor * (station.geometry.coordinates[0] - centerLon);
+    const scaledY = -scaleFactor * (station.geometry.coordinates[1] - centerLat);
 
     const geometry = new THREE.CylinderGeometry(0.03, 0.03, 0.01, 32);
     const material = new THREE.MeshBasicMaterial({ color: "white" });
@@ -38,39 +32,14 @@ const lineCode2Color = {
     scene.add(mesh);
   }
 
-  // Render lines
-  const lineCounter = new Map();
-  for (const lineCode of Object.keys(pathsData)) {
-    const pathData = pathsData[lineCode];
-    for (let i = 1; i < pathData.Path.length; i++) {
-      const fromStation = pathData.Path[i - 1].StationCode;
-      const toStation = pathData.Path[i].StationCode;
-
-      const lineKey = fromStation < toStation ? `${fromStation}-${toStation}` : `${toStation}-${fromStation}`;
-      if (lineCounter.has(lineKey)) {
-        lineCounter.set(lineKey, lineCounter.get(lineKey) + 1);
-      } else {
-        lineCounter.set(lineKey, 1);
-      }
-
-      // Place lines side by side
-      const pt1 = stationPts.get(fromStation);
-      const pt2 = stationPts.get(toStation);
-      const dx = pt2.x - pt1.x;
-      const dy = pt2.y - pt1.y;
-      const mag = Math.sqrt(dx * dx + dy * dy);
-      const dirX = dy / mag;
-      const dirY = -dx / mag;
-      const t = lineCounter.get(lineKey);
-      const mult = Math.pow(-1, t) * Math.floor(t / 2); // 0, -1, 1, 2, -2, ...
-      const offsetX = 0.02 * mult * dirX;
-      const offsetY = 0.02 * mult * dirY;
-      const points = [new THREE.Vector3(pt1.x + offsetX, 0, pt1.y + offsetY), new THREE.Vector3(pt2.x + offsetX, 0, pt2.y + offsetY)];
-      const geometry = new THREE.BufferGeometry().setFromPoints(points);
-      const material = new THREE.LineBasicMaterial({ color: lineCode2Color[lineCode] });
-      const line = new THREE.Line(geometry, material);
-      scene.add(line);
-    }
+  for (const railLine of linesData.features) {
+    const points = railLine.geometry.coordinates.map(coord =>
+      new THREE.Vector3(scaleFactor * (coord[0] - centerLon), 0, -scaleFactor * (coord[1] - centerLat))
+    )
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({ color: lineName2Color[railLine.properties.NAME] });
+    const line = new THREE.Line(geometry, material);
+    scene.add(line);
   }
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
