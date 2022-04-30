@@ -1,4 +1,5 @@
-import * as THREE from 'three';
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import proj4 from "proj4";
 import stationsData from "./data/stations.json";
 import linesData from "./data/lines.json";
@@ -7,8 +8,6 @@ import { getTrainLocationData } from "./trains";
 const centerLat = 38.8976762795752;
 const centerLon = -77.0365512601176;
 const scaleFactor = 100;
-const trackingRadius = 5;
-const timeScale = 0.0005;
 
 const lineName2Color = {
   "blue": "blue",
@@ -29,10 +28,13 @@ const trackLine2Color = {
 };
 
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 1000);
+camera.position.set(5, 5, 5);
+camera.lookAt(0, 0, 0);
 
 const scene = new THREE.Scene();
 
 // Render stations
+const textMeshes = [];
 for (const station of stationsData.features) {
   const scaledX = scaleFactor * (station.geometry.coordinates[0] - centerLon);
   const scaledY = -scaleFactor * (station.geometry.coordinates[1] - centerLat);
@@ -42,6 +44,23 @@ for (const station of stationsData.features) {
   const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(scaledX, 0, scaledY);
   scene.add(mesh);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = 800;
+  canvas.height = 800;
+  const ctx = canvas.getContext("2d");
+  ctx.textAlign = 'center';
+  ctx.font = '24px Arial';
+  ctx.fillStyle = "white"
+  ctx.fillText(station.properties.NAME, canvas.width / 2, canvas.height / 2);
+  ctx.textwra
+  const textTexture = new THREE.Texture(canvas);
+  textTexture.needsUpdate = true;
+  const textMaterial = new THREE.MeshBasicMaterial({ map: textTexture, color: "white", transparent: true });
+  const textMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 10, 10), textMaterial);
+  textMesh.position.set(scaledX, 0.3, scaledY);
+  scene.add(textMesh);
+  textMeshes.push(textMesh);
 }
 
 // Render rail lines
@@ -57,15 +76,26 @@ for (const railLine of linesData.features) {
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setAnimationLoop(animation);
 document.body.appendChild(renderer.domElement);
 
-function animation(time) {
-  camera.position.set(trackingRadius * Math.cos(time * timeScale), 3, trackingRadius * Math.sin(time * timeScale));
-  camera.lookAt(0, 0, 0);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.listenToKeyEvents(window);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.screenSpacePanning = false;
+controls.minDistance = 1;
+controls.maxDistance = 50;
+controls.maxPolarAngle = Math.PI / 2;
+
+animate();
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  for (const textMesh of textMeshes) {
+    textMesh.lookAt(camera.position);
+  }
   renderer.render(scene, camera);
 }
-
 const source = new proj4.Proj('EPSG:3857');
 const dest = new proj4.Proj('WGS84');
 
@@ -74,7 +104,7 @@ async function updateTrainPositions() {
   const trainLocationData = await getTrainLocationData();
   for (const train of trainLocationData.features) {
     if (!itt2Mesh.has(train.attributes.ITT)) {
-      const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
+      const geometry = new THREE.BoxGeometry(0.08, 0.08, 0.08);
       const material = new THREE.MeshBasicMaterial({ color: trackLine2Color[train.attributes.TRACKLINE] });
       const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
