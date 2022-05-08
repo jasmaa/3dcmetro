@@ -12,7 +12,7 @@ let centerLat = 38.8976762795752
 let centerLon = -77.0365512601176
 let scaleFactor = 100.0
 
-let camera = Three.PerspectiveCamera.make4(
+let camera = Three.PerspectiveCamera.make(
   70.0,
   windowInnerWidth->Belt.Int.toFloat /. windowInnerHeight->Belt.Int.toFloat,
   0.01,
@@ -21,7 +21,7 @@ let camera = Three.PerspectiveCamera.make4(
 camera["position"]->Three.Position.set(5.0, 5.0, 5.0)
 camera->Three.PerspectiveCamera.lookAt3(0.0, 0.0, 0.0)
 
-let scene = Three.Scene.make0()
+let scene = Three.Scene.make()
 
 // Add stations
 let textMeshes = []
@@ -33,8 +33,8 @@ for i in 0 to Wmata.stationsData["features"]->Belt.Array.length - 1 {
     let scaledY = -1.0 *. scaleFactor *. (stationCoordinates->Wmata.Coordinates.get(1) -. centerLat)
 
     // Add stop
-    let geometry = Three.CylinderGeometry.make4(0.08, 0.08, 0.01, 32.0)
-    let material = Three.MeshBasicMaterial.make({"color": "white"})
+    let geometry = Three.CylinderGeometry.make(0.08, 0.08, 0.01, 32.0)
+    let material = Three.MeshBasicMaterial.make1(Three.Material.makeProps(~color="white", ()))
     let mesh = Three.Mesh.make(geometry, material)
     mesh["position"]->Three.Position.set(scaledX, 0.0, scaledY)
     scene->Three.Scene.addMesh(mesh)
@@ -52,13 +52,11 @@ for i in 0 to Wmata.stationsData["features"]->Belt.Array.length - 1 {
       canvas->Canvas.getWidth->Belt.Int.toFloat /. 2.0,
       canvas->Canvas.getHeight->Belt.Int.toFloat /. 2.0,
     )
-    let textTexture = Three.Texture.makeFromCanvas(canvas)
+    let textTexture = Three.Texture.make(canvas)
     textTexture->Three.Texture.setNeedsUpdate(true)
-    let textMaterial = Three.MeshBasicMaterial.make2({
-      "map": textTexture,
-      "color": "white",
-      "transparent": true,
-    })
+    let textMaterial = Three.MeshBasicMaterial.make1(
+      Three.Material.makeProps(~map=textTexture, ~color="white", ~transparent=true, ()),
+    )
     let textMesh = Three.Mesh.make(Three.PlaneGeometry.make4(1.0, 1.0, 10, 10), textMaterial)
     textMesh["position"]->Three.Position.set(scaledX, 0.3, scaledY)
     scene->Three.Scene.addMesh(textMesh)
@@ -84,7 +82,7 @@ for i in 0 to Wmata.linesData["features"]->Belt.Array.length - 1 {
     let railName = railLine["properties"]["NAME"]
     switch Wmata.lineName2Color->Js.Dict.get(railName) {
     | Some(color) =>
-      let material = Three.LineBasicMaterial.make({"color": color})
+      let material = Three.LineBasicMaterial.make1(Three.Material.makeProps(~color, ()))
       let line = Three.Line.make(geometry, material)
       scene->Three.Scene.addLine(line)
     | None => Js.Console.error("Color not found")
@@ -132,7 +130,7 @@ let updateTrainPositions = () => {
           let trackLine = train["attributes"]["TRACKLINE"]
           switch Wmata.trackLine2Color->Js.Dict.get(trackLine) {
           | Some(color) =>
-            let material = Three.MeshBasicMaterial.make({"color": color})
+            let material = Three.MeshBasicMaterial.make1(Three.Material.makeProps(~color, ()))
             let mesh = Three.Mesh.make(geometry, material)
             scene->Three.Scene.addMesh(mesh)
             itt2Mesh->Js.Dict.set(itt, mesh)

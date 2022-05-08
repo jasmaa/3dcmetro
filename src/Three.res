@@ -20,7 +20,7 @@ module Camera = {
 
 module PerspectiveCamera = {
   include Camera
-  @module("three") @new external make4: (float, float, float, float) => t = "PerspectiveCamera"
+  @module("three") @new external make: (float, float, float, float) => t = "PerspectiveCamera"
 }
 
 module Geometry = {
@@ -29,7 +29,7 @@ module Geometry = {
 
 module CylinderGeometry = {
   include Geometry
-  @module("three") @new external make4: (float, float, float, float) => t = "CylinderGeometry"
+  @module("three") @new external make: (float, float, float, float) => t = "CylinderGeometry"
 }
 
 module BufferGeometry = {
@@ -51,27 +51,32 @@ module PlaneGeometry = {
 
 module Texture = {
   type t
-  @module("three") @new external makeFromCanvas: Dom.htmlCanvasElement => t = "Texture"
+  @module("three") @new external make: Dom.htmlCanvasElement => t = "Texture"
   @set external setNeedsUpdate: (t, bool) => unit = "needsUpdate"
 }
 
 module Material = {
   type t
+  type props = {"color": option<string>, "map": option<Texture.t>, "transparent": option<bool>}
+  let makeProps = (~color=?, ~map=?, ~transparent=?, ()) => {
+    {
+      "color": color,
+      "map": map,
+      "transparent": transparent,
+    }
+  }
 }
 
 module MeshBasicMaterial = {
   include Material
-  // TODO: make this more general
-  type init = {"color": string}
-  type init2 = {"color": string, "map": Texture.t, "transparent": bool}
-  @module("three") @new external make: init => t = "MeshBasicMaterial"
-  @module("three") @new external make2: init2 => t = "MeshBasicMaterial"
+  @module("three") @new external make0: unit => t = "MeshBasicMaterial"
+  @module("three") @new external make1: props => t = "MeshBasicMaterial"
 }
 
 module LineBasicMaterial = {
   include Material
-  type init = {"color": string}
-  @module("three") @new external make: init => t = "LineBasicMaterial"
+  @module("three") @new external make0: unit => t = "LineBasicMaterial"
+  @module("three") @new external make1: props => t = "LineBasicMaterial"
 }
 
 module Mesh = {
@@ -86,7 +91,7 @@ module Line = {
 
 module Scene = {
   type t
-  @module("three") @new external make0: unit => t = "Scene"
+  @module("three") @new external make: unit => t = "Scene"
   @send external addMesh: (t, Mesh.t) => unit = "add"
   @send external addLine: (t, Line.t) => unit = "add"
 }
