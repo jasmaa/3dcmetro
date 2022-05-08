@@ -10,8 +10,15 @@ pip install -r requirements.txt
 python scripts/dcgis.py
 ```
 
+### Development
 ```
 yarn install
+yarn start
+```
+
+### Build
+
+```
 yarn build
 npx serve dist
 ```
