@@ -19,10 +19,10 @@ module Train = {
 }
 
 type stationData = {"features": array<Station.t>}
-@module("./data/stations.json") external stationsData: stationData = "default"
+@module("./data/Metro_Stations_Regional.geojson") external stationsData: stationData = "default"
 
 type linesData = {"features": array<Line.t>}
-@module("./data/lines.json") external linesData: linesData = "default"
+@module("./data/Metro_Lines_Regional.geojson") external linesData: linesData = "default"
 
 type trainData = {"features": array<Train.t>}
 
