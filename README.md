@@ -15,13 +15,15 @@ Click "Download".
 
 Click "Download GeoJSON".
 
-Copy downloaded file to `src/data`.
+Copy downloaded file to `3dcmetro-web/src/data`.
 
 Repeat steps above for [Metro Stations Regional
 dataset](https://opendata.dc.gov/datasets/DCGIS::metro-stations-regional/explore).
 
 ### Development
+
 ```
+cd 3dcmetro-web
 yarn install
 yarn start
 ```
@@ -29,6 +31,7 @@ yarn start
 ### Build
 
 ```
+cd 3dcmetro-web
 yarn build
 npx serve dist
 ```
