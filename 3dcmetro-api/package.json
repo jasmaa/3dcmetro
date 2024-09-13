@@ -14,5 +14,8 @@
     "wrangler": "^3.60.3"
   },
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "tiny-request-router": "^1.2.2"
+  }
 }
