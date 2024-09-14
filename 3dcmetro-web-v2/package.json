@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build --base=/3dcmetro",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo ok"
   },
   "devDependencies": {
     "@types/proj4": "^2.5.5",

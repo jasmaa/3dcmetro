@@ -24,6 +24,9 @@ jobs:
       - name: "API: Install"
         working-directory: 3dcmetro-api
         run: yarn install --immutable --immutable-cache --check-cache
+      - name: "API: Test"
+        working-directory: 3dcmetro-api
+        run: yarn test
       - name: "API: Deploy"
         working-directory: 3dcmetro-api
         run: yarn deploy > /dev/null
@@ -31,6 +34,9 @@ jobs:
       - name: "Web: Install"
         working-directory: 3dcmetro-web-v2
         run: yarn install --immutable --immutable-cache --check-cache
+      - name: "Web: Test"
+        working-directory: 3dcmetro-web-v2
+        run: yarn test
       - name: "Web: Build"
         working-directory: 3dcmetro-web-v2
         run: yarn build
