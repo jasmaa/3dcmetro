@@ -1,0 +1,21 @@
+{
+  "name": "3dcmetro-web-v2",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/proj4": "^2.5.5",
+    "@types/three": "^0.168.0",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.1"
+  },
+  "dependencies": {
+    "proj4": "^2.12.1",
+    "three": "^0.168.0"
+  }
+}
