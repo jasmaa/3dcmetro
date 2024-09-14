@@ -17,6 +17,8 @@ Click "Download GeoJSON".
 
 Copy downloaded file to `src/data`.
 
+Change the file extension of the file from `.geojson` to `.json`.
+
 Repeat steps above for [Metro Stations Regional
 dataset](https://opendata.dc.gov/datasets/DCGIS::metro-stations-regional/explore).
 
