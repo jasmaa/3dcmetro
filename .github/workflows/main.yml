@@ -29,15 +29,15 @@ jobs:
         run: yarn deploy > /dev/null
         if: ${{ github.ref == 'refs/heads/main' }}
       - name: "Web: Install"
-        working-directory: 3dcmetro-web
+        working-directory: 3dcmetro-web-v2
         run: yarn install --immutable --immutable-cache --check-cache
       - name: "Web: Build"
-        working-directory: 3dcmetro-web
+        working-directory: 3dcmetro-web-v2
         run: yarn build
       - name: "Web: Deploy"
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: 3dcmetro-web/dist
+          folder: 3dcmetro-web-v2/dist
           single-commit: true
         if: ${{ github.ref == 'refs/heads/main' }}
