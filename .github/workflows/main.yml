@@ -27,6 +27,7 @@ jobs:
       - name: "API: Deploy"
         working-directory: 3dcmetro-api
         run: yarn deploy > /dev/null
+        if: ${{ github.ref == 'refs/heads/main' }}
       - name: "Web: Install"
         working-directory: 3dcmetro-web
         run: yarn install --immutable --immutable-cache --check-cache
@@ -39,3 +40,4 @@ jobs:
           branch: gh-pages
           folder: 3dcmetro-web/dist
           single-commit: true
+        if: ${{ github.ref == 'refs/heads/main' }}
