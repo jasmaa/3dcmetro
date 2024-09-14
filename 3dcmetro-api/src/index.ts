@@ -1,6 +1,4 @@
-// TODO: port to rescript
-
-import { Router } from 'tiny-request-router';
+import { Method, Router } from 'tiny-request-router';
 
 const allowedOrigins = ["http://localhost:8080", "http://localhost:5173", "https://jasonmaa.com"];
 
@@ -20,7 +18,7 @@ router
 		return new Response('Hello World!');
 	})
 
-async function cors(request, cb) {
+async function cors(request: Request, cb: () => Response | Promise<Response>) {
 	const headers = request.headers;
 	const origin = headers.get("Origin");
 
@@ -44,7 +42,7 @@ async function cors(request, cb) {
 		) {
 			// Handle pre-flight
 			let respHeaders = {
-				"Access-Control-Allow-Origin": headers.get("Origin"),
+				"Access-Control-Allow-Origin": origin,
 				"Access-Control-Allow-Methods": "GET,HEAD,POST,OPTIONS",
 				"Access-Control-Max-Age": "86400",
 			}
@@ -62,17 +60,17 @@ async function cors(request, cb) {
 		}
 	} else {
 		const resp = await cb();
-		resp.headers.set("Access-Control-Allow-Origin", headers.get("Origin"));
+		resp.headers.set("Access-Control-Allow-Origin", origin);
 		resp.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
 		return resp;
 	}
 }
 
 export default {
-	async fetch(request, env, ctx) {
+	async fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		return cors(request, async () => {
 			const { pathname } = new URL(request.url);
-			const match = router.match(request.method, pathname)
+			const match = router.match(request.method as Method, pathname)
 			if (match) {
 				return match.handler(match.params);
 			}
