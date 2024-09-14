@@ -2,7 +2,7 @@
 
 import { Router } from 'tiny-request-router';
 
-const allowedOrigins = ["http://localhost:8080"];
+const allowedOrigins = ["http://localhost:8080", "https://jasonmaa.com"];
 
 const router = new Router();
 
