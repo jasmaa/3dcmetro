@@ -11,7 +11,7 @@ module Response = {
 @scope("JSON") @val external parseIntoTrainData: string => Wmata.trainData = "parse"
 
 let getTrainLocationData = () => {
-  fetch("http://localhost:8787/trainlocations")
+  fetch(Js.String.concat("/trainlocations", Env.apiUrl))
   ->then(response => {
     Response.text(response)
   })

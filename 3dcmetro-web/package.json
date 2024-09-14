@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "concurrently": "^7.1.0",
+    "dotenv": "^16.4.5",
     "html-webpack-plugin": "^5.5.0",
     "rescript": "^9.1.4",
     "rimraf": "^3.0.2",
