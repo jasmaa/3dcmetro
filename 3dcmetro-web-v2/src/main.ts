@@ -4,6 +4,7 @@ import maplibregl from 'maplibre-gl';
 import { stationData, linesData, lineName2Color, trackLine2Color } from "./wmata";
 import { getTrainLocationData } from "./train";
 import ModelLayer from "./model-layer";
+import metroStationImageUrl from "./assets/metro_station.png"
 
 const centerLon = -77.0365512601176;
 const centerLat = 38.8976762795752;
@@ -23,50 +24,56 @@ const map = new maplibregl.Map({
 map.on('style.load', async () => {
   map.resize();
 
-  // Add rail lines
-  for (const railLine of linesData.features) {
-    const railName = railLine.properties.NAME;
-    const color = lineName2Color.get(railName);
-    if (color) {
-      map.addSource(railName, {
-        "type": "geojson",
-        "data": railLine as GeoJSON.GeoJSON,
-      });
-      map.addLayer({
-        'id': railName,
-        'type': 'line',
-        'source': railName,
-        'layout': {
-          'line-join': 'round',
-          'line-cap': 'round'
-        },
-        'paint': {
-          'line-color': color,
-          'line-width': 5
-        }
-      });
-    } else {
-      console.error("Failed to add rail line. Color not found.");
-    }
+  // Add rail line sources
+  for (const line of linesData.features) {
+    const name = line.properties.NAME;
+    map.addSource(`line-${name}-data`, {
+      "type": "geojson",
+      "data": line as GeoJSON.GeoJSON,
+    });
   }
 
-  // Add station models
-  map.addSource("stations", {
+  // Add station source
+  map.addSource("stations-data", {
     "type": "geojson",
     "data": stationData as GeoJSON.GeoJSON,
   });
 
-  for (const station of stationData.features) {
-    const mesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(50, 50, 10, 32.0),
-      new THREE.MeshBasicMaterial({ color: "white" }),
-    );
-    map.addLayer(new ModelLayer(
-      `station-model-${station.properties.NAME}`,
-      mesh,
-      station.geometry.coordinates as maplibregl.LngLatLike,
-    ));
+  // Add station image
+  const metroStationImage = await map.loadImage(metroStationImageUrl);
+  map.addImage('station', metroStationImage.data);
+
+  // Add rail line lines
+  for (const line of linesData.features) {
+    const name = line.properties.NAME;
+    const color = lineName2Color.get(name)!;
+    map.addLayer({
+      'id': `line-${name}`,
+      'type': 'line',
+      'source': `line-${name}-data`,
+      'layout': {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      'paint': {
+        'line-color': color,
+        'line-width': 8,
+      }
+    });
   }
+
+  // Add station icons
+  map.addLayer({
+    'id': 'station-icons',
+    'type': 'symbol',
+    'source': 'stations-data',
+    'layout': {
+      'icon-image': 'station',
+      'icon-size': 0.15,
+      "icon-pitch-alignment": 'map',
+      'icon-allow-overlap': true,
+    }
+  });
 
   // Add train models
   const itt2Config = new Map<string, { position: Array<number> }>();
@@ -115,16 +122,16 @@ map.on('style.load', async () => {
 
   // Add station labels
   map.addLayer({
-    'id': 'station-labels',
+    'id': 'stations-labels',
     'type': 'symbol',
-    'source': 'stations',
+    'source': 'stations-data',
     'layout': {
       'text-field': ['get', 'NAME'],
     },
     'paint': {
       'text-color': 'black',
       'text-halo-color': 'white',
-      'text-halo-width': 2
+      'text-halo-width': 2,
     },
   });
 });
