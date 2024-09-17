@@ -20,7 +20,7 @@ const map = new maplibregl.Map({
   maxBounds: [[centerLon - 1, centerLat - 0.5], [centerLon + 1, centerLat + 0.5]],
 });
 
-map.on('style.load', () => {
+map.on('style.load', async () => {
   map.resize();
 
   // Add rail lines
@@ -110,7 +110,7 @@ map.on('style.load', () => {
       config.position[1] = position[1];
     }
   }
-  updateTrainPositions();
+  await updateTrainPositions();
   setInterval(updateTrainPositions, 5000);
 
   // Add station labels
@@ -120,6 +120,11 @@ map.on('style.load', () => {
     'source': 'stations',
     'layout': {
       'text-field': ['get', 'NAME'],
-    }
+    },
+    'paint': {
+      'text-color': 'black',
+      'text-halo-color': 'white',
+      'text-halo-width': 2
+    },
   });
 });
