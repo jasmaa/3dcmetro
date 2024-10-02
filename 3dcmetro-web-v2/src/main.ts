@@ -4,7 +4,8 @@ import maplibregl from 'maplibre-gl';
 import { stationData, linesData, lineName2Color, trackLine2Color } from "./wmata";
 import { getTrainLocationData } from "./train";
 import ModelLayer from "./model-layer";
-import metroStationImageUrl from "./assets/metro_station.png"
+import metroStationImageUrl from "./assets/metro_station.png";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 const centerLon = -77.0365512601176;
 const centerLat = 38.8976762795752;
