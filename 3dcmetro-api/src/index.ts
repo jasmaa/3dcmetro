@@ -14,8 +14,10 @@ router
 			},
 		});
 	})
-	.get('/', async () => {
-		return new Response('Hello World!');
+	.all('*', async () => {
+		return new Response('not found', {
+			status: 404,
+		});
 	})
 
 async function cors(request: Request, cb: () => Response | Promise<Response>) {
