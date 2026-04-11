@@ -13,7 +13,7 @@
     "@types/proj4": "^2.5.5",
     "@types/three": "^0.168.0",
     "typescript": "^5.5.3",
-    "vite": "^5.4.1"
+    "vite": "^6.4.2"
   },
   "dependencies": {
     "maplibre-gl": "^4.7.0",
