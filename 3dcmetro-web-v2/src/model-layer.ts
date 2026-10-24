@@ -1,9 +1,10 @@
 import * as THREE from "three";
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl';
 
 /**
  * Map layer for 3D models. Based on:
- * https://maplibre.org/maplibre-gl-js/docs/examples/add-3d-model/
+ * - https://maplibre.org/maplibre-gl-js/docs/examples/add-3d-model/
+ * - https://maplibre.org/maplibre-gl-js/docs/API/interfaces/CustomLayerInterface/
  */
 export default class ModelLayer implements maplibregl.CustomLayerInterface {
   id: string
@@ -22,7 +23,7 @@ export default class ModelLayer implements maplibregl.CustomLayerInterface {
     this.mesh = mesh;
   }
 
-  onAdd(map: maplibregl.Map, gl: WebGLRenderingContext | WebGL2RenderingContext) {
+  onAdd(map: maplibregl.Map, gl: WebGL2RenderingContext) {
     this.camera = new THREE.Camera();
     this.scene = new THREE.Scene();
 
@@ -40,7 +41,8 @@ export default class ModelLayer implements maplibregl.CustomLayerInterface {
     this.renderer.autoClear = false;
   }
 
-  render(_gl: WebGLRenderingContext | WebGL2RenderingContext, matrix: any) {
+  render(_gl: WebGL2RenderingContext, options: maplibregl.CustomRenderMethodInput) {
+    const matrix = options.defaultProjectionData.mainMatrix;
     const modelAltitude = 0;
     const modelRotate = [Math.PI / 2, 0, 0];
 

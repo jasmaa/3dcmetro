@@ -1,11 +1,16 @@
 import * as THREE from "three";
 import proj4 from "proj4";
-import maplibregl from 'maplibre-gl';
-import { stationData, linesData, lineName2Color, trackLine2Color } from "./wmata";
+import * as maplibregl from 'maplibre-gl';
+import {  lineName2Color, trackLine2Color } from "./wmata";
 import { getTrainLocationData } from "./train";
 import ModelLayer from "./model-layer";
 import metroStationImageUrl from "./assets/metro_station.png";
+import stationsData from "./assets/data/Metro_Stations_Regional.json"
+import linesData from "./assets/data/Metro_Lines_Regional.json"
 import "maplibre-gl/dist/maplibre-gl.css";
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+maplibregl.setWorkerUrl(workerUrl);
 
 const centerLon = -77.0365512601176;
 const centerLat = 38.8976762795752;
@@ -37,7 +42,7 @@ map.on('style.load', async () => {
   // Add station source
   map.addSource("stations-data", {
     "type": "geojson",
-    "data": stationData as GeoJSON.GeoJSON,
+    "data": stationsData as GeoJSON.GeoJSON,
   });
 
   // Add station image

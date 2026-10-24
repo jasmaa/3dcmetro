@@ -1,6 +1,3 @@
-import * as stationData from "./data/Metro_Stations_Regional.json";
-import * as linesData from "./data/Metro_Lines_Regional.json";
-
 const lineName2Color = new Map([
   ["blue", "blue"],
   ["green", "green"],
@@ -19,4 +16,4 @@ const trackLine2Color = new Map([
   ["Yellow", "yellow"],
 ]);
 
-export { stationData, linesData, lineName2Color, trackLine2Color };
+export {  lineName2Color, trackLine2Color };
