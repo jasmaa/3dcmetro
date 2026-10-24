@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build --base=/3dcmetro",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "echo ok"
   },
   "devDependencies": {
+    "@types/node": "^26.6.5",
     "@types/proj4": "^2.5.5",
     "@types/three": "^0.168.0",
     "typescript": "^5.5.3",
