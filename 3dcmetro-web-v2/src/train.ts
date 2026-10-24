@@ -1,21 +1,6 @@
 import * as z from "zod";
 
 const TrainLocationData = z.object({
-  displayFieldName: z.string(),
-  fieldAliases: z.object(),
-  geometryType: z.string(),
-  spatialReference: z.object({
-    wkid: z.number(),
-    latestWkid: z.number(),
-  }),
-  fields: z.array(
-    z.object({
-      name: z.string(),
-      type: z.string(),
-      alias: z.string(),
-      length: z.number(),
-    }),
-  ),
   features: z.array(z.object({
     attributes: z.object(),
     geometry: z.object({
