@@ -2,7 +2,7 @@ import * as z from "zod";
 
 const TrainLocationData = z.object({
   features: z.array(z.object({
-    attributes: z.object(),
+    attributes: z.record(z.string(), z.any()),
     geometry: z.object({
       x: z.number(),
       y: z.number(),
