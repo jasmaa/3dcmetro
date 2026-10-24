@@ -35,14 +35,14 @@ map.on('style.load', async () => {
     const name = line.properties.NAME;
     map.addSource(`line-${name}-data`, {
       "type": "geojson",
-      "data": line as GeoJSON.GeoJSON,
+      "data": line,
     });
   }
 
   // Add station source
   map.addSource("stations-data", {
     "type": "geojson",
-    "data": stationsData as GeoJSON.GeoJSON,
+    "data": stationsData,
   });
 
   // Add station image
