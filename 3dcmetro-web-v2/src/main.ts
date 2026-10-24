@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import proj4 from "proj4";
 import * as maplibregl from 'maplibre-gl';
-import {  lineName2Color, trackLine2Color } from "./wmata";
+import { lineName2Color, trackLine2Color } from "./wmata";
 import { getTrainLocationData } from "./train";
 import ModelLayer from "./model-layer";
 import metroStationImageUrl from "./assets/metro_station.png";
@@ -84,14 +84,14 @@ map.on('style.load', async () => {
   // Add train models
   const itt2Config = new Map<string, { position: Array<number> }>();
   const updateTrainPositions = async () => {
-    const trainLocationData = await getTrainLocationData() as any;
-    for (const train of trainLocationData["features"]) {
-      const itt = train["attributes"]["ITT"];
+    const trainLocationData = await getTrainLocationData();
+    for (const train of trainLocationData.features) {
+      const itt = train.attributes["ITT"];
 
       // Create and cache train config if train was not seen before
       if (!itt2Config.has(itt)) {
         const geometry = new THREE.BoxGeometry(50, 50, 50)
-        const trackLine = train["attributes"]["TRACKLINE"];
+        const trackLine = train.attributes["TRACKLINE"];
         const color = trackLine2Color.get(trackLine);
         if (color) {
           const config = {
@@ -117,7 +117,7 @@ map.on('style.load', async () => {
       const position = proj4(
         "EPSG:3857",
         "WGS84",
-        [train["geometry"]["x"], train["geometry"]["y"]],
+        [train.geometry.x, train.geometry.y],
       );
       config.position[0] = position[0];
       config.position[1] = position[1];
