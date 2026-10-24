@@ -3,8 +3,8 @@
 	"compilerOptions": {
 		"moduleResolution": "bundler",
 		"types": [
-			"@cloudflare/vitest-pool-workers/types", // provides `cloudflare:test` and `cloudflare:workers` types
-			"@cloudflare/vitest-pool-workers",
+			"@cloudflare/vitest-plugin/types", // provides `cloudflare:test` and `cloudflare:workers` types
+			"@cloudflare/vitest-plugin",
 			"@cloudflare/workers-types/experimental"
 		]
 	},
